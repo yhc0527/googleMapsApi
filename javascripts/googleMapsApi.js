@@ -80,7 +80,14 @@ function initMap() {
 
 function getCurrentPosition() {
     if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(movePosition);
+        navigator.geolocation.getCurrentPosition(movePosition, function(error) {
+            alert("브라우저의 위치추적을 허용하지 않으셨습니다. 기본좌표로 이동합니다.");
+            var position = {};
+            position.coords = {};
+            position.coords.latitude = '37.5175';
+            position.coords.longitude = '127.0995';
+            movePosition(position);
+        });
         /*
          navigator object는 HTML5의 spec에 포함된 내용이다.
          여기서 displayLocation 은 callback function 명을 지정해 주는 것이다.
@@ -103,7 +110,7 @@ function movePosition(position) {
     }
 
     map.setOptions(mapOptions);
-    addMarker(position);
+    addMarker(googleLatAndLong);
 }
 
 function addMarker(latlong) {
@@ -114,7 +121,7 @@ function addMarker(latlong) {
         clickable: true
     };
 
-    marker.setOptions(markerOptions);
+    var marker = new google.maps.Marker(markerOptions);
     marker.setVisible(true);
 
     var infoWindowOptions = {
@@ -122,6 +129,7 @@ function addMarker(latlong) {
         position: latlong
     };
 
+    var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
     google.maps.event.addListener(marker, "click", function(){
         infoWindow.open(map);
     });
